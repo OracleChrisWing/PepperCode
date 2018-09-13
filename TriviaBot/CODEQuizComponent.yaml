@@ -1,0 +1,52 @@
+metadata:
+  platformVersion: 1.0
+main: true
+name: CODEQuizComponent
+context:
+  variables:
+    allowScanCode : "string"
+    name: "string"
+
+states:
+  
+  # Asks the user to scan bar code.
+  # Yes-
+  askForBarcode:
+    component: "System.List"
+    properties:
+      options: "Yes, No"
+      prompt: "Let me get to know you a little more, can I scan your barcode for the Oracle Code Quiz? You'll get a free prize at the end!! Yay!"
+      variable: "allowScanCode"
+    transitions:
+      next: "checkResponse"
+      
+  checkResponse:
+    component: "System.ConditionEquals"
+    properties:
+      variable: "allowScanCode"
+      value: "Yes"
+    transitions:
+      actions: 
+        equal: "init"
+        notequal: "noScan"
+       
+  init:
+    component: "SetUserName"
+    transitions:
+      next: "startTrivia"
+  
+  startTrivia:
+    component: "TriviaGame"
+    properties:
+      name: "${name.value}"
+    transitions:
+      return: "done"
+      
+      
+  noScan:
+    component: "System.Output"
+    properties:
+      text: "Okay, have a nice day"
+    transitions:
+      return: "done"
+      
